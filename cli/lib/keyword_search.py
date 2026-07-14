@@ -7,13 +7,21 @@ def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:
     for m in movies:
         pproc_query = preprocess_text(query)
         pproc_title = preprocess_text(m["title"])
-        if pproc_query in pproc_title:
-            results.append(m)
-            if len(results) >= limit:
+        found = False
+        for word in pproc_query:
+            for title_word in pproc_title:
+                if word in title_word:
+                    results.append(m)
+                    found = True
+                    break
+            if found:
                 break
+        if len(results) >= limit:
+            break
     return results
 
-def preprocess_text(text: str) -> str:
+def preprocess_text(text: str) -> list:
     text = text.lower()
     text = text.translate(str.maketrans("","",string.punctuation))
-    return text
+    text_list = text.split()
+    return text_list
