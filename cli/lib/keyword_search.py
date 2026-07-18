@@ -1,6 +1,7 @@
 import string
 from tracemalloc import stop
 from .search_utils import load_movies, DEFAULT_SEARCH_LIMIT, load_stop_words
+from nltk.stem import PorterStemmer
 
 def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[dict]:
     movies = load_movies()
@@ -42,7 +43,9 @@ def preprocess_stop_words(list) -> list:
 
 def remove_stop_words(tokens, stop_words):
     cleaned_words = []
+    stemmer = PorterStemmer()
     for t in tokens:
         if t not in stop_words:
+            t = stemmer.stem(t)
             cleaned_words.append(t)
     return cleaned_words
